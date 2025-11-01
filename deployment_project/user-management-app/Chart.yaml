@@ -1,0 +1,15 @@
+apiVersion: v2
+name: user-management-app
+description: A Helm chart for User Management Application with separated frontend and backend services
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - flask
+  - nginx
+  - user-management
+  - microservices
+home: https://github.com/L33Tify/deplyment_project
+maintainers:
+  - name: L33Tify
+    email: maintainer@example.com

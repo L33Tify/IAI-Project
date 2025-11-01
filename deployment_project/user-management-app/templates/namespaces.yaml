@@ -1,0 +1,34 @@
+{{- if .Values.namespaces.create }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.backend.namespace }}
+  labels:
+    name: {{ .Values.backend.namespace }}
+    app.kubernetes.io/name: {{ include "user-management-app.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "user-management-app.chart" . }}
+  annotations:
+    {{- with .Values.namespaces.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.frontend.namespace }}
+  labels:
+    name: {{ .Values.frontend.namespace }}
+    app.kubernetes.io/name: {{ include "user-management-app.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: frontend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "user-management-app.chart" . }}
+  annotations:
+    {{- with .Values.namespaces.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+{{- end }}

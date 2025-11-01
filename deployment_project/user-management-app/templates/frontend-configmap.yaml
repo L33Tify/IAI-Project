@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "user-management-app.frontend.fullname" . }}-config
+  namespace: {{ .Values.frontend.namespace }}
+  labels:
+    {{- include "user-management-app.frontend.labels" . | nindent 4 }}
+data:
+  API_BASE_URL: "http://{{ include "user-management-app.backend.fullname" . }}.{{ .Values.backend.namespace }}.svc.cluster.local:{{ .Values.backend.service.port }}/api"

@@ -1,0 +1,170 @@
+# Default values for user-management-app.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Global configuration
+global:
+  imageRegistry: "737210140690.dkr.ecr.us-east-2.amazonaws.com"
+  imagePullSecrets: []
+
+# Name overrides
+nameOverride: ""
+fullnameOverride: "user-management-app"
+
+# Namespace configuration
+namespaces:
+  create: true
+  annotations: {}
+
+# RBAC configuration
+rbac:
+  create: true
+  backend:
+    extraRules: []
+  frontend:
+    extraRules: []
+
+# Backend configuration
+backend:
+  namespace: "user-management-backend"
+  replicaCount: 2
+
+  image:
+    repository: 737210140690.dkr.ecr.us-east-2.amazonaws.com/my-backend
+    pullPolicy: IfNotPresent
+    tag: "latest"
+
+  service:
+    type: ClusterIP
+    port: 5000
+    targetPort: 5000
+    annotations: {}
+
+  serviceAccount:
+    create: true
+    automount: true
+    annotations: {}
+    name: ""
+
+  podSecurityContext:
+    fsGroup: 2000
+    runAsNonRoot: true
+    runAsUser: 1000
+
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - ALL
+    readOnlyRootFilesystem: false
+    runAsNonRoot: true
+    runAsUser: 1000
+
+  env:
+    flaskEnv: "production"
+
+  extraEnv: []
+    # - name: CUSTOM_ENV_VAR
+    #   value: "custom_value"
+
+  healthCheck:
+    path: "/api/health"
+    initialDelaySeconds: 30
+    readinessInitialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+# Frontend configuration
+frontend:
+  namespace: "user-management-frontend"
+  replicaCount: 2
+
+  image:
+    repository: 737210140690.dkr.ecr.us-east-2.amazonaws.com/my-frontend
+    pullPolicy: IfNotPresent
+    tag: "latest"
+
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
+    annotations: {}
+    # loadBalancerIP: ""
+    # loadBalancerSourceRanges: []
+    # nodePort: 32080
+
+  serviceAccount:
+    create: true
+    automount: true
+    annotations: {}
+    name: ""
+
+  podSecurityContext:
+    fsGroup: 101
+    runAsNonRoot: true
+    runAsUser: 101
+
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - ALL
+    readOnlyRootFilesystem: false
+    runAsNonRoot: true
+    runAsUser: 101
+
+  extraEnv: []
+    # - name: CUSTOM_ENV_VAR
+    #   value: "custom_value"
+
+  healthCheck:
+    path: "/health"
+    initialDelaySeconds: 10
+    readinessInitialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 3
+    failureThreshold: 3
+
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+# Ingress configuration (optional)
+ingress:
+  enabled: true
+  className: "alb"
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+  hosts:
+    - host: ""
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: user-management-app-frontend
+  tls: []

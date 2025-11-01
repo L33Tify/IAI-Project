@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "user-management-app.backend.fullname" . }}-config
+  namespace: {{ .Values.backend.namespace }}
+  labels:
+    {{- include "user-management-app.backend.labels" . | nindent 4 }}
+data:
+  FLASK_ENV: {{ .Values.backend.env.flaskEnv | quote }}
