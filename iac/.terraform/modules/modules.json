@@ -1,1 +1,0 @@
-{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"eks_cluster","Source":"./modules/eks-cluster","Dir":"modules/eks-cluster"},{"Key":"eks_nodegroup","Source":"./modules/eks-nodegroup","Dir":"modules/eks-nodegroup"}]}
