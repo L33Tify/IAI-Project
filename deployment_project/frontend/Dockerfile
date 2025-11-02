@@ -1,14 +1,10 @@
-# Multi-stage build for frontend
-# Stage 1: Build stage (not needed for static files, but keeping structure for future enhancements)
 FROM nginx:alpine AS production
 
-# Set working directory
 WORKDIR /usr/share/nginx/html
 
 # Remove default nginx static assets
 RUN rm -rf ./*
 
-# Copy static files
 COPY index.html .
 COPY script.js .
 COPY styles.css .
@@ -32,10 +28,8 @@ RUN mkdir -p /tmp/nginx && \
     chmod -R 755 /var/cache/nginx && \
     chmod -R 755 /var/log/nginx
 
-# Switch to non-root user
 USER nginx
 
-# Expose port
 EXPOSE 8080
 
 # Health check
