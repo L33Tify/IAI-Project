@@ -8,47 +8,42 @@ from datetime import datetime
 import sys
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes to allow frontend access
+CORS(app)
 
 
 # Configure logging
 def setup_logging():
     """Configure logging with rotation and stdout output"""
-    # Create formatter
     log_format = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S'
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
     )
-    
-    # Configure root logger
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
-    
-    # Clear existing handlers
+
     logger.handlers.clear()
-    
-    # Console handler (stdout) - for kubectl logs
+
+    # stdout logs
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(logging.INFO)
     console_handler.setFormatter(log_format)
     logger.addHandler(console_handler)
-    
-    # File handler with rotation (optional - for persistent logs)
-    # Max 10MB per file, keep 5 backup files
+
+    # Log rotation for presistence
     try:
-        log_dir = '/tmp/logs'
+        log_dir = "/tmp/logs"
         os.makedirs(log_dir, exist_ok=True)
         file_handler = RotatingFileHandler(
-            f'{log_dir}/backend.log',
-            maxBytes=10*1024*1024,  # 10MB
-            backupCount=5
+            f"{log_dir}/backend.log",
+            maxBytes=10 * 1024 * 1024,  # 10MB
+            backupCount=5,
         )
         file_handler.setLevel(logging.INFO)
         file_handler.setFormatter(log_format)
         logger.addHandler(file_handler)
     except Exception as e:
         logger.warning(f"Could not setup file logging: {e}")
-    
+
     return logger
 
 
@@ -57,7 +52,6 @@ logger = setup_logging()
 logger.info("Backend application starting up...")
 
 
-# Load user data from JSON file
 def load_users():
     """Load users from the JSON file"""
     try:
@@ -74,7 +68,6 @@ def load_users():
         return []
 
 
-# Load users on application startup
 users = load_users()
 
 
@@ -91,9 +84,11 @@ def get_user_by_id(user_id):
     """Get a specific user by ID"""
     client_ip = request.remote_addr
     timestamp = datetime.now().isoformat()
-    
-    logger.info(f"GET /api/users/{user_id} - User ID {user_id} searched by {client_ip} at {timestamp}")
-    
+
+    logger.info(
+        f"GET /api/users/{user_id} - User ID {user_id} searched by {client_ip} at {timestamp}"
+    )
+
     user = next((u for u in users if u["id"] == user_id), None)
 
     if user:
