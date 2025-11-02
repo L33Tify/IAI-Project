@@ -11,7 +11,7 @@ NC='\033[0m' # No Color
 # Configuration
 CLUSTER_NAME="user-management-eks-cluster"
 REGION="us-east-2"
-AWS_ACCOUNT_ID="737210140690"
+AWS_ACCOUNT_ID="${MY_AWS_ID}"
 ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com"
 ALB_CONTROLLER_VERSION="2.14.1"
 IAM_ROLE_NAME="user-management-dev-aws-load-balancer-controller"
@@ -118,7 +118,8 @@ print_success "Cluster access verified"
 
 # Step 8: Deploy user-management-app
 print_status "Deploying user-management-app..."
-cd /home/l33t/iai/deplyment_project
+# Change to the repo's deployment_project directory (relative to scripts dir)
+cd "$(dirname "$0")/../deployment_project"
 
 # Get the latest commit SHA if deploying manually
 if [ -z "$IMAGE_TAG" ]; then
